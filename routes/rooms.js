@@ -8,7 +8,7 @@ const {
   deleteRoom
 } = require('../controllers/roomsController');
 
-// List all rooms
+//List all rooms
 router.get('/', getAllRooms);
 // Get room by ID
 router.get('/:id', getRoomById);

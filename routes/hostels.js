@@ -7,7 +7,7 @@ const {
   updateHostel,
   deleteHostel
 } = require('../controllers/hostelsController');
-
+//get all hostels
 router.get('/', getAllHostels);
 router.get('/:id', getHostelById);
 router.post('/', createHostel);

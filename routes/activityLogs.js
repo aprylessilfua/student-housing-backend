@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.get('/', getActivityLogs);
 router.post('/', createActivityLog);
+//module.exports = router;
 
 module.exports = router;
