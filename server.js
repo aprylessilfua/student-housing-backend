@@ -3,8 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const jwt = require('jsonwebtoken'); // needed for verifying JWTs
-const pool = require('./db/db'); // correct path to your db module
+const jwt = require('jsonwebtoken'); 
+const pool = require('./db/db'); 
 
 const app = express();
 
@@ -27,14 +27,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// Route Handlers (import your routers)
+// Route Handlers
 const hostelsRoute = require('./routes/hostels');
 const roomsRoute = require('./routes/rooms');
 const applicationsRoute = require('./routes/applications');
 const activityLogsRoute = require('./routes/activityLogs');
 const notificationsRoute = require('./routes/notifications');
 const usersRoute = require('./routes/users');
-const authRoute = require('./routes/auth'); // added auth router
+const authRoute = require('./routes/auth');
 const dashboardRoute = require('./routes/dashboard');
 const adminRoute = require('./routes/admin');
 
@@ -45,7 +45,7 @@ app.use('/api/applications', applicationsRoute);
 app.use('/api/activity-logs', activityLogsRoute);
 app.use('/api/notifications', notificationsRoute);
 app.use('/api/users', usersRoute);
-app.use('/api/auth', authRoute); // mount auth routes
+app.use('/api/auth', authRoute);
 app.use('/api/dashboard', dashboardRoute);
 app.use('/api/admin', adminRoute);
 
