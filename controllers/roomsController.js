@@ -1,6 +1,6 @@
 const pool = require('../db/db');
 
-// Fetch all rooms
+//Fetch all rooms
 async function getAllRooms(req, res) {
   try {
     const result = await pool.query(

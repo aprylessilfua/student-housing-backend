@@ -1,6 +1,6 @@
 const db = require('../db/db');
 
-// Get all notifications
+//Get all notifications
 const getNotifications = async (req, res) => {
   try {
     const result = await db.query('SELECT * FROM notifications');

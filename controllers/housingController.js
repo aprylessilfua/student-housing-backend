@@ -1,6 +1,6 @@
 const db = require('../db/db');
 
-// Controller for fetching housing options
+//Controller for fetching housing options
 const getHousingOptions = async (req, res) => {
     try {
         const housingOptions = await db.query('SELECT * FROM hostels');

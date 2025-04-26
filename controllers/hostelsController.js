@@ -1,6 +1,6 @@
 const pool = require('../db/db');
 
-// Fetch all hostels
+//Fetch all hostels
 async function getAllHostels(req, res) {
   try {
     const result = await pool.query(

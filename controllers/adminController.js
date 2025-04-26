@@ -11,7 +11,7 @@ exports.getHostels = async (req, res) => {
     }
 };
 
-// Create a new hostel
+//Create a new hostel
 exports.createHostel = async (req, res) => {
     try {
         const { name, address } = req.body;

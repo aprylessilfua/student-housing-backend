@@ -8,7 +8,7 @@ async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
 
-    // select `name` as `username` to match your DB schema
+    //select `name` as `username` to match DB schema
     const result = await pool.query(
       'SELECT id, name AS username, password FROM users WHERE email = $1',
       [email]

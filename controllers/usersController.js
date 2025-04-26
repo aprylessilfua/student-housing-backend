@@ -8,7 +8,7 @@ const pool   = require('../db/db');
  */
 async function getUsers(req, res) {
   try {
-    // alias "name" → "username" so front-end still sees .username
+    // alias "name" | "username" so front-end still sees .username
     const result = await pool.query(
       'SELECT id, name AS username, email, phone FROM users'
     );

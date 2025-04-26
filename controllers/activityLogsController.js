@@ -1,6 +1,6 @@
 const db = require('../db/db');
 
-// Add a new activity log
+//Add a new activity log
 const addActivityLog = async (actorId, actorRole, action, details = null) => {
     try {
         await db.query(

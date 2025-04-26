@@ -11,7 +11,7 @@ exports.getDashboard = async (req, res) => {
     }
     const userId = req.user.id;
 
-    // Run only the real queries (no activities table)
+    // Run only the real queries
     const [
       profileResult,
       applicationsResult,
@@ -43,7 +43,7 @@ exports.getDashboard = async (req, res) => {
         )
       `, [userId]),
 
-      // Recent notifications → map to activities
+      // Recent notifications | map to activities
       pool.query(`
         SELECT message, type, created_at
         FROM notifications

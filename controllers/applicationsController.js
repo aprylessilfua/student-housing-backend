@@ -10,7 +10,7 @@ const getApplications = async (req, res) => {
   }
 };
 
-// Create a new application
+//Create a new application
 const createApplication = async (req, res) => {
   const { user_id, room_id, status, applied_at, room_preference, personal_details, notified } = req.body;
   try {
