@@ -1,123 +1,122 @@
+Technical Reference
+2.1 Architecture Overview
+csharp
+Copy code
+[GitHub Pages Frontend] ↔ [Node/Express API on Render] ↔ [Postgres on Render]
+Frontend: HTML/CSS/JS (app.js + admin.js)
 
-# Campus Hostel Management Platform
+Backend: Express routes + controllers + JWT auth
 
-## 🏛️ Project Overview
-A full-stack web application for managing campus hostel allocations, allowing students to view hostels, apply for rooms, and monitor their application status.
+DB: Postgres, accessed via pool configured from process.env.DATABASE_URL
 
-- **Frontend:** Static HTML/CSS/JS served via **GitHub Pages**.
-- **Backend:** **Node.js** with **Express**, deployed on **Render** with a **PostgreSQL** database.
-- **Authentication:** JWT (1-hour expiry) via Authorization headers.
+2.2 Frontend File Structure
+pgsql
+Copy code
+/frontend
+├─ index.html
+├─ hostels.html
+├─ rooms.html
+├─ applications.html
+├─ dashboard.html
+├─ login.html
+├─ register.html
+├─ admin-login.html
+├─ admin.html
+├─ admin-hostels.html
+├─ admin-rooms.html
+├─ admin-students.html
+├─ admin-applications.html
+├─ admin-notifications.html
+├─ styles.css
+├─ app.js       ← student loader + handlers
+└─ admin.js     ← admin loader + handlers
+2.3 Backend File Structure
+bash
+Copy code
+/backend
+├─ server.js            # Express setup + JWT middleware
+├─ db/db.js             # pg Pool (uses DATABASE_URL)
+├─ controllers/
+│  ├─ usersController.js
+│  ├─ authController.js
+│  ├─ dashboardController.js
+│  └─ ...  
+├─ routes/
+│  ├─ users.js
+│  ├─ auth.js
+│  ├─ dashboard.js
+│  └─ admin.js          # if you separated admin routes
+└─ .env (on Render)     # JWT_SECRET, DATABASE_URL
+2.4 Environment Variables
+DATABASE_URL → postgres://…
 
----
+JWT_SECRET → your HMAC key
 
-## 🛠️ Architecture Overview
+PORT → (auto by Render)
 
-### Frontend
-- Static pages (`index.html`, `hostels.html`, `rooms.html`, `applications.html`, `dashboard.html`, `login.html`, `register.html`)
-- Single JavaScript entrypoint: `app.js` (handles per-page rendering and API calls)
+2.5 API Endpoints
+Public (no auth)
+GET /api/hostels
 
-### Backend
-- `server.js`: Sets up Express and mounts `/api` routes
-- `db/db.js`: Connects to PostgreSQL via connection string
-- `controllers/`: Business logic for users, auth, dashboard
-- `routes/`: Express routers (`users.js`, `auth.js`, `dashboard.js`, etc.)
+GET /api/rooms
 
-### Environment Variables
-- `DATABASE_URL`: PostgreSQL connection string
-- `JWT_SECRET`: Secret key for signing JWT tokens
-- `PORT`: Server port (automatically set by Render)
+POST /api/users (register)
 
----
+POST /api/auth/login → { token }
 
-## 🌐 API Endpoints
+Student-only (JWT)
+GET /api/dashboard → profile, stats, hostels, activities
 
-| Method | Path                  | Description                                | Auth Required |
-|------- |---------------------- |------------------------------------------- |---------------|
-| GET    | `/api/hostels`         | List all hostels                          | No            |
-| GET    | `/api/rooms`           | List all rooms                            | No            |
-| POST   | `/api/applications`    | Apply for housing (user_id, room_id, status) | No (frontend validation) |
-| POST   | `/api/auth/login`      | User login (returns `{ token }`)           | No            |
-| POST   | `/api/users`           | Register a new student                    | No            |
-| GET    | `/api/dashboard`       | Get student dashboard data (profile, stats, hostels, activities) | Yes (Bearer JWT) |
+POST /api/applications → apply
 
-> Admin CRUD routes are available under `/api/hostels`, `/api/rooms`, `/api/users`, etc.
+Admin-only (JWT in adminToken)
+Hostels
 
----
+GET /api/hostels
 
-## 🚀 Local Development
+POST/PUT/DELETE /api/hostels/:id
 
-### 1. Clone Repositories
-```bash
-git clone <frontend-repo-url>
-git clone <backend-repo-url>
-```
+Rooms
 
-### 2. Setup Backend
-```bash
-cd backend/
+GET /api/rooms
+
+POST/PUT/DELETE /api/rooms/:id
+
+Users
+
+GET /api/users
+
+DELETE /api/users/:id
+
+Applications
+
+GET /api/applications
+
+PUT /api/applications/:id (status)
+
+Notifications
+
+GET /api/notifications
+
+POST /api/notifications
+
+PUT /api/notifications/:id/read
+
+2.6 Running & Deploying
+Local Backend
+
+bash
+Copy code
+cd backend
 npm install
-export DATABASE_URL=postgres://your-postgres-dsn
-export JWT_SECRET=your-secret
+export DATABASE_URL=postgres://...
+export JWT_SECRET=supersecret
 node server.js
-```
+Local Frontend
+Serve via npx http-server or simply open index.html
 
-### 3. Setup Frontend
-- Open `index.html` directly in your browser **or** serve it using:
-```bash
-npx http-server
-```
+Deploy
 
-Make sure `app.js` points to your local backend URL if needed.
+Push backend → new Render service → set env vars
 
----
-
-## 🌍 Deployment Guide
-
-### Backend
-1. Push your backend repo to GitHub.
-2. Link it to a new **Render** service.
-3. Set up environment variables (`DATABASE_URL`, `JWT_SECRET`) in Render.
-4. Deploy.
-
-### Frontend
-1. Push your frontend repo to GitHub.
-2. Deploy via **GitHub Pages**.
-3. Ensure `app.js` fetch calls point to the deployed backend URL.
-
----
-
-## 📂 Project Structure
-
-```
-frontend/
-├── index.html
-├── hostels.html
-├── rooms.html
-├── applications.html
-├── dashboard.html
-├── login.html
-├── register.html
-└── app.js
-
-backend/
-├── server.js
-├── db/
-│   └── db.js
-├── controllers/
-│   ├── usersController.js
-│   ├── authController.js
-│   └── dashboardController.js
-├── routes/
-│   ├── users.js
-│   ├── auth.js
-│   └── dashboard.js
-└── .env (environment variables)
-```
-
----
-
-## 📋 Notes
-- **JWT Tokens** expire after 1 hour. Users must re-login after expiry.
-- Frontend-side validation is done for application submissions.
-- Admin routes are protected and require valid JWT tokens with admin rights (implementation-specific).
-
+Push frontend → GitHub Pages → ensure app.js & admin.js point to the new Render URL
