@@ -5,12 +5,20 @@ const pool   = require('../db/db');
 
 /**
  * GET /api/users
+ * Only return users who have role = 'student'
  */
 async function getUsers(req, res) {
   try {
     const result = await pool.query(
-      // select name AS username so frontend still sees .username
-      'SELECT id, name AS username, email, phone FROM users'
+      `SELECT
+         id,
+         name  AS username,
+         email,
+         phone
+       FROM users
+       WHERE role = $1
+       ORDER BY id`,
+      ['student']
     );
     res.json(result.rows);
   } catch (err) {
@@ -42,6 +50,7 @@ async function createUser(req, res) {
 
   } catch (err) {
     console.error('createUser error:', err);
+    // handle unique email constraint
     if (err.code === '23505') {
       return res.status(409).json({ error: 'Email already in use.' });
     }
