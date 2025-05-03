@@ -8,14 +8,14 @@ const pool   = require('../db/db');
  */
 async function getUsers(req, res) {
   try {
-    // alias "name" | "username" so front-end still sees .username
     const result = await pool.query(
+      // select name AS username so frontend still sees .username
       'SELECT id, name AS username, email, phone FROM users'
     );
     res.json(result.rows);
   } catch (err) {
     console.error('getUsers error:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to fetch users.' });
   }
 }
 
@@ -24,9 +24,8 @@ async function getUsers(req, res) {
  */
 async function createUser(req, res) {
   try {
-    const { username, email, phone, password } = req.body;
-
-    if (!username || !email || !phone || !password) {
+    const { name, email, phone, password } = req.body;
+    if (!name || !email || !phone || !password) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
 
@@ -36,14 +35,13 @@ async function createUser(req, res) {
       VALUES ($1, $2, $3, $4)
       RETURNING id, name AS username, email, phone
     `;
-    const values = [username, email, phone, hashed];
+    const values = [name, email, phone, hashed];
 
     const result = await pool.query(insertQuery, values);
     res.status(201).json(result.rows[0]);
 
   } catch (err) {
     console.error('createUser error:', err);
-    // handle unique-email violation
     if (err.code === '23505') {
       return res.status(409).json({ error: 'Email already in use.' });
     }
