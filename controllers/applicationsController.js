@@ -3,7 +3,17 @@ const db = require('../db/db');
 // Get all applications
 const getApplications = async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM applications');
+    const result = await db.query(`
+      SELECT
+        a.id,
+        u.name     AS username,
+        a.room_id,
+        a.status,
+        a.applied_at
+      FROM applications a
+      JOIN users u ON a.user_id = u.id
+      ORDER BY a.applied_at DESC
+    `);
     res.json(result.rows);
   } catch (err) {
     console.error('getApplications error:', err);
